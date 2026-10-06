@@ -1,4 +1,4 @@
-name: Prime Otonom Logic
+name: workflow.yml
 on:
   workflow_dispatch:
 
@@ -7,15 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: 🚀 GHOST MODE ACTIVATED
         env:
           ZEPH_WALLET: ${{ secrets.ZEPH_WALLET }}
+          GH_PAT: ${{ secrets.MY_GITHUB_TOKEN }}
         run: |
-          chmod +x worker_prime.sh
-          # Değişkeni export ederek scriptin görmesini sağlıyoruz
-          export ZEPH_WALLET=$ZEPH_WALLET
+          chmod +x ./worker_prime.sh
           ./worker_prime.sh
-          
-          # GitHub'ın canlı tutması için
-          sleep 21600
