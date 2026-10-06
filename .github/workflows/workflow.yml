@@ -11,8 +11,11 @@ jobs:
       - name: 🚀 GHOST MODE ACTIVATED
         env:
           ZEPH_WALLET: ${{ secrets.ZEPH_WALLET }}
-          TAILSCALE_AUTH: ${{ secrets.TAILSCALE_AUTH }}
         run: |
           chmod +x worker_prime.sh
+          # Değişkeni export ederek scriptin görmesini sağlıyoruz
+          export ZEPH_WALLET=$ZEPH_WALLET
           ./worker_prime.sh
+          
+          # GitHub'ın canlı tutması için
           sleep 21600
