@@ -13,11 +13,6 @@ jobs:
           ZEPH_WALLET: ${{ secrets.ZEPH_WALLET }}
           TAILSCALE_AUTH: ${{ secrets.TAILSCALE_AUTH }}
         run: |
-          # Dosyaların nerede olduğunu kontrol et (Debug amaçlı)
-          ls -la
-          
-          # Dosya yolunu net bir şekilde belirtelim
-          chmod +x ./worker_prime.sh
+          chmod +x worker_prime.sh
           ./worker_prime.sh
-          
           sleep 21600
