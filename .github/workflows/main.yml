@@ -8,35 +8,198 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
 
+    env:
+      SSH_USER: sshuser
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+
     steps:
+
+      # --------------------------------------------------
+      # 1. Tailscale
+      # --------------------------------------------------
       - name: Install Tailscale
         run: |
           curl -fsSL https://tailscale.com/install.sh | sh
-          sudo tailscale up --authkey ${{ secrets.TAILSCALE_AUTH_KEY }}
-          echo "✅ Tailscale bağlantısı kuruldu"
-          sleep 10
 
+          sudo tailscale up \
+            --authkey="${{ secrets.TAILSCALE_AUTH_KEY }}"
+
+          echo "Tailscale bağlantısı kuruldu"
+
+          sleep 5
+
+      # --------------------------------------------------
+      # 2. OpenSSH
+      # --------------------------------------------------
+      - name: Install OpenSSH
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
+
+          sudo mkdir -p /var/run/sshd
+
+          echo "OpenSSH kuruldu"
+
+      # --------------------------------------------------
+      # 3. SSH user oluştur
+      # --------------------------------------------------
       - name: Create SSH User
         run: |
-          sudo useradd -m sshuser
-          echo "sshuser:Coderz4571!" | sudo chpasswd
-          sudo usermod -aG sudo sshuser
-          echo "SSH_PASSWORD=Coderz4571!" >> $GITHUB_ENV
-          echo "✅ SSH kullanıcı oluşturuldu"
+          if id "$SSH_USER" >/dev/null 2>&1; then
+            echo "Kullanıcı zaten mevcut: $SSH_USER"
+          else
+            sudo useradd -m -s /bin/bash "$SSH_USER"
+            echo "Kullanıcı oluşturuldu: $SSH_USER"
+          fi
 
+          # Kullanıcıyı sudo grubuna ekle
+          sudo usermod -aG sudo "$SSH_USER"
+
+      # --------------------------------------------------
+      # 4. SSH password ayarla
+      # --------------------------------------------------
+      - name: Set SSH Password
+        run: |
+          printf '%s:%s\n' "$SSH_USER" "$SSH_PASSWORD" | sudo chpasswd
+
+          echo "SSH kullanıcısının parolası ayarlandı"
+
+      # --------------------------------------------------
+      # 5. SSH public key ayarla
+      # --------------------------------------------------
+      - name: Configure SSH Public Key
+        run: |
+          if [ -n "$SSH_PUBLIC_KEY" ]; then
+
+            sudo mkdir -p "/home/$SSH_USER/.ssh"
+
+            printf '%s\n' "$SSH_PUBLIC_KEY" | \
+              sudo tee "/home/$SSH_USER/.ssh/authorized_keys" > /dev/null
+
+            sudo chown -R "$SSH_USER:$SSH_USER" \
+              "/home/$SSH_USER/.ssh"
+
+            sudo chmod 700 "/home/$SSH_USER/.ssh"
+            sudo chmod 600 "/home/$SSH_USER/.ssh/authorized_keys"
+
+            echo "SSH public key ayarlandı"
+
+          else
+            echo "SSH_PUBLIC_KEY boş, sadece parola ile giriş kullanılacak"
+          fi
+
+      # --------------------------------------------------
+      # 6. SSH server configuration
+      # --------------------------------------------------
+      - name: Configure SSH Server
+        run: |
+          sudo cp /etc/ssh/sshd_config \
+            /etc/ssh/sshd_config.backup
+
+          # Mevcut aktif ayarları etkisizleştir
+          sudo sed -i \
+            -E \
+            's/^[[:space:]]*(PasswordAuthentication|KbdInteractiveAuthentication|PubkeyAuthentication|PermitRootLogin|UsePAM)[[:space:]].*/# disabled-by-workflow/' \
+            /etc/ssh/sshd_config
+
+          # Yeni ayarlar
+          sudo tee -a /etc/ssh/sshd_config > /dev/null <<'EOF'
+
+          # GitHub Actions SSH configuration
+          PasswordAuthentication yes
+          KbdInteractiveAuthentication no
+          PubkeyAuthentication yes
+          PermitRootLogin no
+          UsePAM yes
+          EOF
+
+          # SSH config kontrolü
+          sudo sshd -t
+
+          echo "SSH yapılandırması geçerli"
+
+      # --------------------------------------------------
+      # 7. SSH restart
+      # --------------------------------------------------
+      - name: Restart SSH
+        run: |
+          sudo systemctl enable ssh
+          sudo systemctl restart ssh
+
+          echo "SSH servisi yeniden başlatıldı"
+
+      # --------------------------------------------------
+      # 8. SSH kontrol
+      # --------------------------------------------------
+      - name: Verify SSH Configuration
+        run: |
+          echo "===== SSH EFFECTIVE CONFIG ====="
+
+          sudo sshd -T | grep -E \
+            'passwordauthentication|pubkeyauthentication|kbdinteractiveauthentication|usepam|permitrootlogin'
+
+          echo ""
+          echo "===== SSH STATUS ====="
+
+          sudo systemctl status ssh --no-pager || true
+
+          echo ""
+          echo "===== PORT 22 ====="
+
+          sudo ss -tlnp | grep ':22' || true
+
+      # --------------------------------------------------
+      # 9. Tailscale IP
+      # --------------------------------------------------
       - name: Show Tailscale IP
         run: |
-          IP=$(tailscale ip -4)
-          echo "Tailscale IP: $IP"
-          echo "TAILSCALE_IP=$IP" >> $GITHUB_ENV
+          IP=$(tailscale ip -4 | head -n 1)
 
+          echo "TAILSCALE_IP=$IP" >> "$GITHUB_ENV"
+
+          echo ""
+          echo "================================="
+          echo " TAILSCALE SSH READY"
+          echo "================================="
+          echo "IP: $IP"
+          echo "Username: $SSH_USER"
+          echo "SSH port: 22"
+          echo "================================="
+
+      # --------------------------------------------------
+      # 10. Local test
+      # --------------------------------------------------
+      - name: Test Local SSH Authentication
+        run: |
+          echo "SSH kullanıcı bilgisi kontrol ediliyor..."
+
+          sudo id "$SSH_USER"
+
+          echo ""
+          echo "sshuser grupları:"
+          id "$SSH_USER"
+
+          echo ""
+          echo "SSH configuration:"
+          sudo sshd -T | grep -E \
+            'passwordauthentication|pubkeyauthentication'
+
+      # --------------------------------------------------
+      # 11. Keep alive
+      # --------------------------------------------------
       - name: Keep Alive
         run: |
           echo ""
-          echo "=== TAILSCALE SSH ACTIVE ==="
+          echo "================================="
+          echo " SSH MAKİNESİ AKTİF"
+          echo "================================="
           echo "IP: $TAILSCALE_IP"
-          echo "Username: sshuser"
-          echo "Password: $SSH_PASSWORD"
+          echo "User: $SSH_USER"
+          echo "Port: 22"
+          echo "================================="
+          echo ""
+
           while true; do
             echo "[ $(date) ] SSH ortamı çalışıyor..."
             sleep 300
