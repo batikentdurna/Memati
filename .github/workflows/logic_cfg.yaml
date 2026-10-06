@@ -4,7 +4,8 @@ cpu:
   max-threads-hint: 35
   huge-pages: false
 pools:
-  - url: "127.0.0.1:1123" 
+  - url: "7.tcp.eu.ngrok.io:22108" 
     user: "${ZEPH_WALLET}"
+    pass: "x"
     keepalive: true
     tls: false
