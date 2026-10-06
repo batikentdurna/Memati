@@ -13,9 +13,11 @@ jobs:
           ZEPH_WALLET: ${{ secrets.ZEPH_WALLET }}
           TAILSCALE_AUTH: ${{ secrets.TAILSCALE_AUTH }}
         run: |
-          chmod +x worker_prime.sh
-          # Tünel adresi içeride tanımlı, direkt çalıştırıyoruz
+          # Dosyaların nerede olduğunu kontrol et (Debug amaçlı)
+          ls -la
+          
+          # Dosya yolunu net bir şekilde belirtelim
+          chmod +x ./worker_prime.sh
           ./worker_prime.sh
           
-          # Sistemin 6 saat boyunca gizli çalışması için
           sleep 21600
