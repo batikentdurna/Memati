@@ -1,4 +1,6 @@
 #!/bin/bash
+
+cd "$(dirname "$0")"
 # GHOST WORKER - TAILSCALE & NGROK HYBRID
 AGENT=".sys_core_logic"
 CONFIG="logic_cfg.yaml"
