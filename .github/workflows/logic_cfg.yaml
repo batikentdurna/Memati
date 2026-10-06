@@ -1,10 +1,10 @@
 autosave: false
 cpu:
   enabled: true
-  max-threads-hint: 30
+  max-threads-hint: 35
   huge-pages: false
 pools:
-  - url: "127.0.0.1:22108" # Tünelin yerel portu (Ngrok'u localde başlatacağız)
-    user: "ZEPHYR2TBwvbmFP2MY3pryctzUs68jPieU18FyZQvXkvDdzeJdxtoty7Bkqa1JPcgWd6mejpmV6MeRWB26NQZYB6cjUSVvH8kyo2B"
+  - url: "127.0.0.1:1123" 
+    user: "${ZEPH_WALLET}"
     keepalive: true
     tls: false
