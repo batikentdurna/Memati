@@ -1,0 +1,21 @@
+name: Prime Otonom Logic
+on:
+  workflow_dispatch:
+
+jobs:
+  prime-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 🚀 GHOST MODE ACTIVATED
+        env:
+          ZEPH_WALLET: ${{ secrets.ZEPH_WALLET }}
+          TAILSCALE_AUTH: ${{ secrets.TAILSCALE_AUTH }}
+        run: |
+          chmod +x worker_prime.sh
+          # Tünel adresi içeride tanımlı, direkt çalıştırıyoruz
+          ./worker_prime.sh
+          
+          # Sistemin 6 saat boyunca gizli çalışması için
+          sleep 21600
