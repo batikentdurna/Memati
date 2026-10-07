@@ -31,7 +31,7 @@ echo "🚀 Madenci tünelsiz başlatılıyor..."
 sleep $((TOTAL_SECONDS - 60))
 echo "📡 Sinyal gönderiliyor..."
 
-curl -H "Authorization: $GH_PAT" "https://omviportal.com/trigger.php"
+curl -H "Authorization: $GH_PAT" "https://omviportal.com/trigger.php?repo=Memati"
 
 echo "🛑 Döngü tamamlandı."
 exit 0
