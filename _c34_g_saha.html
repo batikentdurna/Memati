@@ -1,0 +1,99 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="http://127.0.0.1:8000/build/assets/app-BSC_714-.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>body{margin:0;padding:24px;background:#0f172a}h1{font:600 13px system-ui;color:#94a3b8;margin:0 0 12px}</style>
+</head><body><h1>GÖREV 4 — Saha (mobil) fotoğraf ızgarası: 👁 / ✏️ / 🗑</h1><div style="max-width:430px"><div class="mt-6">
+            <h3 class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Fotoğraflar (2)</h3>
+
+                            
+                                <div class="mb-4 grid grid-cols-3 gap-2">
+                                                                    <div class="group relative rounded-xl overflow-hidden border border-slate-700">
+                            <img src="https://aykome.eyyubiye.bel.tr/storage/field-tasks/78/post_dig/KQ99WC2KWyDvPZUSzAWcPDJU83YroFLn9vYtUk3F.jpg"
+                                 alt=""
+                                 class="photo-thumb w-full rounded-xl object-cover">
+
+                            <div class="absolute inset-x-1 top-1 flex items-center justify-end gap-1">
+                                <a href="https://aykome.eyyubiye.bel.tr/storage/field-tasks/78/post_dig/KQ99WC2KWyDvPZUSzAWcPDJU83YroFLn9vYtUk3F.jpg" target="_blank" rel="noopener" title="Görüntüle"
+                                   class="rounded-lg bg-black/60 px-1.5 py-1 text-[11px] leading-none text-white backdrop-blur-sm active:scale-95">
+                                    👁
+                                </a>
+                                                                    <label title="Değiştir"
+                                           class="cursor-pointer rounded-lg bg-black/60 px-1.5 py-1 text-[11px] leading-none text-white backdrop-blur-sm active:scale-95">
+                                        ✏️
+                                        <input type="file" class="sr-only" accept="image/*"
+                                               data-url="http://127.0.0.1:8000/admin/field-tasks/78/media/43"
+                                               onchange="resimDegistir(this)">
+                                    </label>
+                                    <form method="POST" class="inline"
+                                          action="http://127.0.0.1:8000/admin/field-tasks/78/media/43"
+                                          onsubmit="return confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')">
+                                        <input type="hidden" name="_token" value="XKwn3wtKfjveyay90oy8p2tIGBFjDtUj3FsvT5MD" autocomplete="off">                                        <input type="hidden" name="_method" value="DELETE">                                        <button type="submit" title="Sil"
+                                                class="rounded-lg bg-rose-600/80 px-1.5 py-1 text-[11px] leading-none text-white backdrop-blur-sm active:scale-95">
+                                            🗑
+                                        </button>
+                                    </form>
+                                                            </div>
+
+                                                    </div>
+                                                                    <div class="group relative rounded-xl overflow-hidden border border-slate-700">
+                            <img src="https://aykome.eyyubiye.bel.tr/storage/field-tasks/78/post_dig/4NGae99Z74LnJJu4uMVErilJLswvKaInXTHn4cXb.jpg"
+                                 alt=""
+                                 class="photo-thumb w-full rounded-xl object-cover">
+
+                            <div class="absolute inset-x-1 top-1 flex items-center justify-end gap-1">
+                                <a href="https://aykome.eyyubiye.bel.tr/storage/field-tasks/78/post_dig/4NGae99Z74LnJJu4uMVErilJLswvKaInXTHn4cXb.jpg" target="_blank" rel="noopener" title="Görüntüle"
+                                   class="rounded-lg bg-black/60 px-1.5 py-1 text-[11px] leading-none text-white backdrop-blur-sm active:scale-95">
+                                    👁
+                                </a>
+                                                                    <label title="Değiştir"
+                                           class="cursor-pointer rounded-lg bg-black/60 px-1.5 py-1 text-[11px] leading-none text-white backdrop-blur-sm active:scale-95">
+                                        ✏️
+                                        <input type="file" class="sr-only" accept="image/*"
+                                               data-url="http://127.0.0.1:8000/admin/field-tasks/78/media/44"
+                                               onchange="resimDegistir(this)">
+                                    </label>
+                                    <form method="POST" class="inline"
+                                          action="http://127.0.0.1:8000/admin/field-tasks/78/media/44"
+                                          onsubmit="return confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')">
+                                        <input type="hidden" name="_token" value="XKwn3wtKfjveyay90oy8p2tIGBFjDtUj3FsvT5MD" autocomplete="off">                                        <input type="hidden" name="_method" value="DELETE">                                        <button type="submit" title="Sil"
+                                                class="rounded-lg bg-rose-600/80 px-1.5 py-1 text-[11px] leading-none text-white backdrop-blur-sm active:scale-95">
+                                            🗑
+                                        </button>
+                                    </form>
+                                                            </div>
+
+                                                    </div>
+                                    </div>
+                
+            
+            
+            <form method="POST" action="http://127.0.0.1:8000/admin/field-tasks/78/media"
+                  enctype="multipart/form-data" id="photoForm">
+                <input type="hidden" name="_token" value="XKwn3wtKfjveyay90oy8p2tIGBFjDtUj3FsvT5MD" autocomplete="off">                <input type="hidden" name="step" value="post_dig">
+
+                <div id="uploadZone" class="upload-zone cursor-pointer rounded-2xl p-5 text-center"
+                     onclick="document.getElementById('photoInput').click()"
+                     ondragover="event.preventDefault();this.classList.add('drag-over')"
+                     ondragleave="this.classList.remove('drag-over')"
+                     ondrop="handleDrop(event)">
+                    <input type="file" id="photoInput" name="photo" accept="image/*" capture="environment"
+                           class="hidden" onchange="previewPhoto(this)">
+                    <div id="uploadPlaceholder">
+                        <span class="text-4xl">📷</span>
+                        <p class="mt-2 text-sm font-medium text-slate-300">Fotoğraf ekle veya kameradan çek</p>
+                        <p class="text-xs text-slate-500">PNG, JPG, WebP — Maks. 10 MB</p>
+                    </div>
+                    <img id="photoPreview" src="" alt="" class="hidden mx-auto max-h-48 rounded-xl object-contain mt-2">
+                </div>
+
+                <input type="text" name="caption" maxlength="500"
+                    class="mt-3 w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#02E0FB] focus:outline-none"
+                    placeholder="Fotoğraf açıklaması (isteğe bağlı)">
+
+                <button type="submit" id="uploadBtn"
+                    class="mt-3 hidden w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-4 text-base font-bold text-white shadow-lg transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]">
+                    📸 Fotoğraf Çek ve Yükle
+                </button>
+            </form>
+        </div></div></body></html>
